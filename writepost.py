@@ -87,8 +87,15 @@ def handle(path):
         if to_post:
             try:
                 serv_module = __import__("post_"+service)
-                serv_module.post(path)
-                add_posted_mark(path, service)
+                if serv_module.post(path):
+                    add_posted_mark(path, service)
+                else:
+                    print('was not posted to '+service)
+                    change = yes_no_question('Change the post?')
+                    if change:
+                        edit(path)
+                        handle(path)
+                    return
             except ImportError as e:
                 print('Error: module post_'+service+'.py not found')
                 change = yes_no_question('Change the post?')
