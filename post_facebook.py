@@ -24,8 +24,7 @@ def post(path):
             return False
     quote=''.join(data)
     new_link=(SHARE_LINK + link + '&quote=' + urllib.quote_plus(quote))
-    os.system('google-chrome -app="'+new_link+'"')
-    print('Browser was closed, assume the post was shared')
+    os.system('google-chrome -app="'+new_link+'"'+'&')
     return True
 
 
