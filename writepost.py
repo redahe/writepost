@@ -111,6 +111,7 @@ def main():
     args =  parser.parse_args()
     if args.draft:
         edit(args.draft)
+        handle(args.draft)
     else:
         path = create_template()
         time1 = os.stat(path).st_mtime
@@ -121,6 +122,7 @@ def main():
         else:
             print 'Canceled'
         os.remove(path)
+
 
 
 if __name__ == '__main__':
