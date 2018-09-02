@@ -1,21 +1,23 @@
 #!/usr/bin/python
 
 import tempfile
-import shutil
+import datetime
 import os
 import sys
 import argparse
+import conf
 
 TEMPLATE = 'template.org'
-COMMAND = 'emacs'
+COMMAND = conf.run_editor
 
+TITLE_SECTION='#+TITLE:'
 TARGET_SECTION='#+TARGET:'
 POSTED_SECTION='#+POSTED_TO:'
 
 YES = ['yes', 'ye', 'y']
 NO = ['no', 'n']
 
-POSTED = set()
+title=None
 
 def yes_no_question(question, default_yes=True):
     if default_yes:
@@ -70,6 +72,9 @@ def handle(path):
     posted_to = set()
     with open(path) as f:
         for line in f:
+            if line.startswith(TITLE_SECTION):
+                global title
+                title=line[len(TITLE_SECTION):]
             if line.startswith(TARGET_SECTION):
                 for s in line[len(TARGET_SECTION):].split():
                     services.add(s)
@@ -105,13 +110,25 @@ def handle(path):
                 return
 
 
+def save_post(path):
+    global title
+    folder=conf.save_folder
+    folder = os.path.expanduser(os.path.expandvars(folder))
+    if not os.path.exists(folder):
+        os.system('mkdir -p '+folder)
+    name=title.replace(' ', '_').strip()+datetime.datetime.now().strftime("%d._%B_%Y_%I_%M%p")
+    dest = folder+os.path.sep+name
+    os.system('cp '+ path + ' ' + dest)
+    print 'Saved to: ' + dest
+
+
 def main():
     parser = argparse.ArgumentParser(description='Post a message to blogs.')
-    parser.add_argument('draft', nargs='?', default=None, help='draft file to use')
+    parser.add_argument('file', nargs='?', default=None, help='file to open')
     args =  parser.parse_args()
-    if args.draft:
-        edit(args.draft)
-        handle(args.draft)
+    if args.file:
+        edit(args.file)
+        handle(args.file)
     else:
         path = create_template()
         time1 = os.stat(path).st_mtime
@@ -119,6 +136,7 @@ def main():
         time2 = os.stat(path).st_mtime
         if time1 != time2:
             handle(path)
+            save_post(path)
         else:
             print 'Canceled'
         os.remove(path)

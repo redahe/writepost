@@ -3,6 +3,7 @@
 import facebook
 import urllib
 import os
+import conf
 
 
 SHARE_LINK='https://www.facebook.com/sharer/sharer.php?u='
@@ -24,7 +25,7 @@ def post(path):
             return False
     quote=''.join(data)
     new_link=(SHARE_LINK + link + '&quote=' + urllib.quote_plus(quote))
-    os.system('google-chrome -app="'+new_link+'"'+'&')
+    os.system(conf.run_browser+' "'+new_link+'"')
     return True
 
 
