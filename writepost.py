@@ -136,7 +136,8 @@ def main():
         time2 = os.stat(path).st_mtime
         if time1 != time2:
             handle(path)
-            save_post(path)
+            if yes_no_question('Save post?'):
+                save_post(path)
         else:
             print 'Canceled'
         os.remove(path)
