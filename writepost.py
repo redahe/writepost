@@ -127,9 +127,11 @@ def main():
     parser.add_argument('file', nargs='?', default=None, help='file to open')
     args =  parser.parse_args()
     if args.file:
+        print 'Editing '+ args.file
         edit(args.file)
         handle(args.file)
     else:
+        print 'Writing a new post'
         path = create_template()
         time1 = os.stat(path).st_mtime
         edit(path)
