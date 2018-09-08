@@ -116,7 +116,7 @@ def save_post(path):
     folder = os.path.expanduser(os.path.expandvars(folder))
     if not os.path.exists(folder):
         os.system('mkdir -p '+folder)
-    name=title.replace(' ', '_').strip()+datetime.datetime.now().strftime("%d._%B_%Y_%I_%M%p")
+    name=title.replace(' ', '_').strip()+datetime.datetime.now().strftime("%d._%B_%Y_%I_%M%p") + '.org'
     dest = folder+os.path.sep+name
     os.system('cp '+ path + ' ' + dest)
     print 'Saved to: ' + dest
